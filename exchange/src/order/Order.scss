@@ -1,0 +1,40 @@
+.order {
+  label {
+    font-weight: bold; 
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 5px;
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+  }
+
+  .actions {
+    text-align: right;
+  }
+
+  .authentication {
+    margin-top: 10px;
+
+    pre {
+      padding: 16px;
+      overflow: auto;
+      font-size: 12px;
+      line-height: 1.45;
+      background-color: #ddd;
+      border-radius: 6px;
+      word-wrap: normal;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+  }
+}

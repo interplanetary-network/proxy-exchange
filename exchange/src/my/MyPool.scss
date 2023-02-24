@@ -1,0 +1,28 @@
+.my-order {
+  .list {
+    .item {
+      display: flex;
+      align-items: center;
+
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+      margin: 5px 0;
+      height: 30px;
+
+      &.expired {
+        color: #ccc;
+      }
+
+      & > * {
+        margin-right: 5px;
+        flex: 1;
+      }
+
+      .actions {
+        text-align: right;
+        justify-items: flex-end;
+      }
+    }
+  }
+}

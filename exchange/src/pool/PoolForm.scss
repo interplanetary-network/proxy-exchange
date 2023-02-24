@@ -1,0 +1,31 @@
+.pool-form {
+  display: flex;
+  flex-direction: column;
+
+  & > div {
+    margin-bottom: 10px;
+  }
+
+  .proxies {
+    textarea {
+      width: 100%;
+    }
+  }
+
+  .pool-info {
+    display: flex;
+    align-items: center;
+
+    & > div {
+      margin-right: 20px;
+    }
+  }
+
+  .message {
+    font-size: 12px;
+
+    &.error {
+      color: red;
+    }
+  }
+}

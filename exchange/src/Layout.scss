@@ -1,0 +1,39 @@
+.main {
+  max-width: 1024px;
+  margin: 0px auto;
+
+  .show {
+    display: unset; 
+  }
+
+  .hidden {
+    display: none; 
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    height: 50px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 80px;
+
+    h1 {
+      margin: 0;
+
+      a {
+        color: black;
+        text-decoration: none;
+      }
+    }
+
+    .nav {
+      display: flex;
+      & > * {
+        margin-left: 20px;
+      }
+    }
+  }
+}
+

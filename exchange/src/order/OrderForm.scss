@@ -1,0 +1,22 @@
+.order-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .action > * {
+    margin-left: 5px;
+  }
+
+  & > *{
+    margin: 5px 0;
+  }
+
+  .message {
+    font-size: 12px;
+    text-align: right;
+
+    .error {
+      color: red;
+    }
+  }
+}

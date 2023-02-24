@@ -1,0 +1,111 @@
+.pool {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin: 5px 0;
+  padding: 5px;
+
+  .show {
+    display: normal;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .key {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+
+    .counter {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .id {
+        font-size: 18px;
+      }
+
+      .vote {
+        font-size: 12px;
+      }
+    }
+
+    .proxy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .location {
+        padding: 2px;
+
+        span {
+          display: inline-block;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 2px 4px;
+          margin: 0 2px;
+          background-color: #eee;
+        }
+      }
+
+      .protocol {
+        padding: 2px;
+
+        span {
+          display: inline-block;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 2px 4px;
+          margin: 0 2px;
+          background-color: #eee;
+        }
+      }
+
+
+    }
+
+    .action {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .detail {
+    margin: 5px 0;
+    border-top: 1px solid #eee;
+
+    .proxies {
+      .proxy {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+
+        &.odd {
+          background-color: #f5f5f5;
+        }
+
+        .location {
+          padding: 2px;
+
+          display: inline-block;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 2px 4px;
+          margin: 0 2px;
+          background-color: #eee;
+        }
+      }
+    }
+
+    .checkout-form {
+      align-self: end;
+    }
+  }
+}
