@@ -14,7 +14,6 @@ export default function OrderDetail() {
     async function fetchOrder() {
       const contract = new ProxyExchange();
       const rawOrder = await contract.orderOf(orderID);
-      console.log(rawOrder)
       setOrder({...rawOrder, ...{id: orderID}})
     }
 

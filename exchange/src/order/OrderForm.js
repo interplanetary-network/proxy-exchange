@@ -15,7 +15,6 @@ export default function OrderForm({ pool }) {
 
   async function onSubmit(e) {
     e.preventDefault();
-    setInLoading(true);
     setError("");
     setTransactionHash("");
 
@@ -23,9 +22,16 @@ export default function OrderForm({ pool }) {
     const data = Object.fromEntries(formData.entries());
 
     const startAt = (new Date(data.startAt)).getTime() / 1000;
+
+    if (startAt+(data.duration*60) > pool.validBeforeAt ) {
+      setError("The order valid date over the pool valid date, the pool may not available after that time.");
+      return;
+    }
+
     const accounts = await contract.requestAccounts();
     const value = Web3.utils.toBN(pool.pricePerMinute).mul(Web3.utils.toBN(data.duration)).toString();
 
+    setInLoading(true);
     contract.buy(pool.id, startAt, data.duration, value, accounts[0])
       .on("transactionHash", (hash) => {
         setTransactionHash(hash);
@@ -33,7 +39,7 @@ export default function OrderForm({ pool }) {
       .on("receipt", (receipt) => {
         console.log(receipt);
         setInLoading(false);
-        navigate(`/orders/${receipt.events.Buy.returnValues.orderID}`)
+        navigate(`/my/orders/${receipt.events.Buy.returnValues.orderID}`)
       })
       .on("error",  (error) => {
         setInLoading(false);

@@ -15,20 +15,20 @@ export default class ProxyExchange {
     return this.web3.eth.requestAccounts();
   }
 
-  orderOfUserAndIndex(address, index) {
-    return this.contract.methods.orderOfUserAndIndex(address, index).call();
+  orderOfUserAndIndex(user, index) {
+    return this.contract.methods.orderOfUserAndIndex(user, index).call();
   }
 
-  totalOrderOfUser(address) {
-    return this.contract.methods.totalOrderOfUser(address).call();
+  totalOrderOfUser(user) {
+    return this.contract.methods.totalOrderOfUser(user).call();
   }
 
-  poolOfUserAndIndex(address, index) {
-    return this.contract.methods.poolOfUserAndIndex(address, index).call();
+  poolOfUserAndIndex(user, index) {
+    return this.contract.methods.poolOfUserAndIndex(user, index).call();
   }
 
-  totalPoolOfUser(address) {
-    return this.contract.methods.totalPoolOfUser(address).call();
+  totalPoolOfUser(user) {
+    return this.contract.methods.totalPoolOfUser(user).call();
   }
 
   proxyOf(id) {
@@ -49,6 +49,22 @@ export default class ProxyExchange {
 
   poolOf(id) {
     return this.contract.methods.poolOf(id).call();
+  }
+
+  voteOfUserAndOrder(user, orderID) {
+    return this.contract.methods.voteOfUserAndOrder(user, orderID).call();
+  }
+
+  upVote(orderID, from) {
+    return this.contract.methods.upVote(orderID).send({from: from});
+  }
+
+  downVote(orderID, from) {
+    return this.contract.methods.downVote(orderID).send({from: from});
+  }
+
+  recallVote(orderID, from) {
+    return this.contract.methods.recallVote(orderID).send({from: from});
   }
 
   buy(id, startAt, duration, value, from) {

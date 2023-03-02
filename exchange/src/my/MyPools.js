@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import ProxyExchange from '../contracts/ProxyExchange.js';
 import Layout from '../Layout.js';
 import Loading from '../Loading.js';
-import './MyOrder.scss';
+import './MyOrders.scss';
 import Pool from '../pool/Pool.js';
 import Web3 from 'web3';
 
-export default function MyPool() {
+export default function MyPools() {
   const [pools, setPools] = useState([]);
   const [inLoading, setInLoading] = useState(false);
 

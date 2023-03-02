@@ -37,7 +37,7 @@ export default function PoolForm() {
         setTransactionHash(hash)
       })
       .on("receipt", function(receipt){
-        navigate(`/pools/${receipt.events.Publish.returnValues.poolID}`)
+        navigate(`/my/pools/${receipt.events.Publish.returnValues.poolID}`)
         console.log(receipt)
       })
       .on("error", function(error) {

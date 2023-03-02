@@ -8,3 +8,4 @@ contracts/node_modules/
 contracts/.deploys/
 
 exchange/node_modules/
+exchange/build/

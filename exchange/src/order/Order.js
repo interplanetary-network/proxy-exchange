@@ -9,10 +9,24 @@ export default function Order({ order }) {
   const startAt = new Date(order.startAt * 1000);
   const [pool, setPool] = useState();
   const [sign, setSign] = useState("");
+  const [isVoted, setIsVoted] = useState(false);
+  const [myVote, setMyVote] = useState(0);
+  const [voteChanged, setVoteChanged] = useState(0);
+  const [voteInLoading, setVoteInLoading] = useState(false);
+  const [voteError, setVoteError] = useState("");
 
   useEffect(() => {
     async function fetchPool() {
+      // reset my vote state
+      setMyVote(0);
       const contract = new ProxyExchange();
+      const accounts = await contract.requestAccounts();
+      const vote = await contract.voteOfUserAndOrder(accounts[0], order.id);
+      setIsVoted(vote.voted);
+      if (vote.voted) {
+        setMyVote(vote.t > 0 ? -1 : 1);
+      }
+
       const rawPool = await contract.poolOf(order.poolID);
       const pool = {
         id: order.poolID,
@@ -20,7 +34,7 @@ export default function Order({ order }) {
         proxies: [],
         validBeforeAt: rawPool.validBeforeAt,
         provider: rawPool.provider,
-        vote: rawPool.vote,
+        votes: rawPool.votes,
       }
 
       // fetch proxies
@@ -36,7 +50,67 @@ export default function Order({ order }) {
     }
 
     fetchPool();
-  }, [order])
+  }, [order, voteChanged])
+
+  async function onDownVote() {
+    setVoteInLoading(true);
+    setVoteError("");
+    const contract = new ProxyExchange();
+    const accounts = await contract.requestAccounts();
+    await contract.downVote(order.id, accounts[0])
+      .on("transactionHash", (hash) => {console.log(hash)})
+      .on("receipt", (receipt) => {
+        console.log(receipt);
+        setVoteChanged((c) => ++c);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        setVoteError(error.message);
+      })
+      .finally(() => {
+        setVoteInLoading(false);
+      })
+  }
+
+  async function onUpVote() {
+    setVoteInLoading(true);
+    setVoteError("");
+    const contract = new ProxyExchange();
+    const accounts = await contract.requestAccounts();
+    await contract.upVote(order.id, accounts[0])
+      .on("transactionHash", (hash) => {console.log(hash)})
+      .on("receipt", (receipt) => {
+        console.log(receipt);
+        setVoteChanged((c) => ++c);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        setVoteError(error.message);
+      })
+      .finally(() => {
+        setVoteInLoading(false);
+      })
+  }
+
+  async function onRecallVote() {
+    setVoteInLoading(true);
+    setVoteError("");
+    const contract = new ProxyExchange();
+    const accounts = await contract.requestAccounts();
+    await contract.recallVote(order.id, accounts[0])
+      .on("transactionHash", (hash) => {console.log(hash)})
+      .on("receipt", (receipt) => {
+        console.log(receipt);
+        setVoteChanged((c) => ++c);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        setVoteError(error.message);
+      })
+      .finally(() => {
+        setVoteInLoading(false);
+      })
+  }
 
   async function onGenerateAuthentication() {
     const contract = new ProxyExchange();
@@ -72,12 +146,29 @@ export default function Order({ order }) {
         <div className="row">
           <div className="col">
             <label>Pool:</label>
-            {pool !== undefined ? <Pool pool={pool} showDetail={true} withoutCheckoutForm={true} /> : <Loading />}
+            {pool !== undefined ? <Pool pool={pool} showDetail={true} withoutCheckoutForm={true} myVote={myVote}/> : <Loading />}
           </div>
         </div>
       </div>
       <div className="actions">
-        <button onClick={onGenerateAuthentication}>Generate Authentication</button>
+        <div className="vote">
+          { voteInLoading ? (
+            <Loading withoutText={true} />
+          ) : (
+            isVoted ? (
+              <button onClick={onRecallVote}>Recall Vote</button>
+            ) : (
+              <>
+                <button onClick={onDownVote}>Down Vote</button>
+                <button onClick={onUpVote}>Up Vote</button>
+              </>
+            )
+          )}
+          <div className="error">{voteError}</div>
+        </div>
+        <div>
+          <button onClick={onGenerateAuthentication}>Generate Authentication</button>
+        </div>
       </div>
       <div className="authentication">
         {sign !== "" ? (

@@ -20,7 +20,7 @@ export default function PoolDetail() {
         proxies: [],
         validBeforeAt: rawPool.validBeforeAt,
         provider: rawPool.provider,
-        vote: rawPool.vote,
+        votes: rawPool.votes,
       }
 
       // fetch proxies

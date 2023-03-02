@@ -3,10 +3,10 @@ import ProxyExchange from '../contracts/ProxyExchange.js';
 import Layout from '../Layout.js';
 import {toLocal, isPast } from '../utils/date.js';
 import Loading from '../Loading.js';
-import './MyOrder.scss';
+import './MyOrders.scss';
 import { Link } from 'react-router-dom';
 
-export default function MyOrder() {
+export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [inLoading, setInLoading] = useState(false);
 
@@ -47,7 +47,7 @@ export default function MyOrder() {
                     <div className="duration">{order.duration}</div>
                     <div className="status">{isPast(Number(order.startAt) + (Number(order.duration) * 60)) ? 'expired' : 'active'}</div>
                     <div className="actions">
-                      <Link to={`/orders/${order.id}`}>Detail</Link>
+                      <Link to={`/my/orders/${order.id}`}>Detail</Link>
                     </div>
                   </div>
                 )

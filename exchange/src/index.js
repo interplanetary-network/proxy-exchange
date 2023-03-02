@@ -9,9 +9,10 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import OrderDetail from './order/OrderDetail';
-import MyOrder from './my/MyOrder';
-import MyPool from './my/MyPool';
+import MyOrders from './my/MyOrders';
+import MyPools from './my/MyPools';
 import PoolNew from './pool/PoolNew';
+import About from './About';
 
 const router = createHashRouter([
   {
@@ -23,20 +24,24 @@ const router = createHashRouter([
     element: <PoolNew />,
   },
   {
-    path: "/pools/:poolID",
+    path: "/my/pools/:poolID",
     element: <PoolDetail />,
   },
   {
-    path: "/pools",
-    element: <MyPool />,
+    path: "/my/pools",
+    element: <MyPools />,
   },
   {
-    path: "/orders",
-    element: <MyOrder />,
+    path: "/my/orders",
+    element: <MyOrders />,
   },
   {
-    path: "/orders/:orderID",
+    path: "/my/orders/:orderID",
     element: <OrderDetail />,
+  },
+  {
+    path: "/about",
+    element: <About />,
   },
 ]);
 

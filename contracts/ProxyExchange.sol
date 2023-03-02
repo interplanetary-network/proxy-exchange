@@ -22,7 +22,7 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         uint256 pricePerMinute;
         // UNIX timestamp in seconds
         uint64 validBeforeAt;
-        Counters.Counter vote;
+        int256 votes;
     }
 
     struct Order {
@@ -82,11 +82,7 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         __UUPSUpgradeable_init();
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyOwner
-    {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     function publish(
         uint256 pricePerMinute,
@@ -110,10 +106,7 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             _proxyID.increment();
             uint256 proxyID = _proxyID.current();
 
-            _proxiesMap[proxyID] = Proxy({
-                url: proxies[i].url,
-                location: proxies[i].location
-            });
+            _proxiesMap[proxyID] = Proxy({url: proxies[i].url, location: proxies[i].location});
 
             pool.proxies[i] = proxyID;
         }
@@ -145,7 +138,7 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         uint256 totalPrice = (pool.pricePerMinute * duration);
         require(msg.value == totalPrice, "Paid value not match total price");
 
-        uint256 commission = msg.value * _commissionRate / 100;
+        uint256 commission = (msg.value * _commissionRate) / 100;
 
         // transfer to provider
         payable(pool.provider).transfer(msg.value - commission);
@@ -179,59 +172,29 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return _pools.length;
     }
 
-    function totalOrderOfUser(address user)
-        external
-        view
-        onlyProxy
-        returns (uint256)
-    {
+    function totalOrderOfUser(address user) external view onlyProxy returns (uint256) {
         return _myOrders[user].length;
     }
 
-    function orderOfUserAndIndex(address user, uint256 index)
-        external
-        view
-        onlyProxy
-        returns (uint256, Order memory)
-    {
+    function orderOfUserAndIndex(address user, uint256 index) external view onlyProxy returns (uint256, Order memory) {
         uint256 id = _myOrders[user][index];
         return (id, _ordersMap[id]);
     }
 
-    function orderOf(uint256 id)
-        external
-        view
-        onlyProxy
-        returns (Order memory)
-    {
+    function orderOf(uint256 id) external view onlyProxy returns (Order memory) {
         return _ordersMap[id];
     }
 
-    function totalPoolOfUser(address user)
-        external
-        view
-        onlyProxy
-        returns (uint256)
-    {
+    function totalPoolOfUser(address user) external view onlyProxy returns (uint256) {
         return _myPools[user].length;
     }
 
-    function poolOfUserAndIndex(address user, uint256 index)
-        external
-        view
-        onlyProxy
-        returns (uint256, Pool memory)
-    {
+    function poolOfUserAndIndex(address user, uint256 index) external view onlyProxy returns (uint256, Pool memory) {
         uint256 id = _myPools[user][index];
         return (id, _poolsMap[id]);
     }
 
-    function poolOfIndex(uint256 index)
-        external
-        view
-        onlyProxy
-        returns (uint256, Pool memory)
-    {
+    function poolOfIndex(uint256 index) external view onlyProxy returns (uint256, Pool memory) {
         uint256 id = _pools[index];
         return (id, _poolsMap[id]);
     }
@@ -244,16 +207,13 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return _proxiesMap[id];
     }
 
-    function setPoolValidBeforeAt(uint256 poolID, uint64 validBeforeAt)
-        external
-        onlyProxy
-    {
-        require(_poolsMap[poolID].provider != msg.sender, "Permission denied");
+    function setPoolValidBeforeAt(uint256 poolID, uint64 validBeforeAt) external onlyProxy {
+        require(_poolsMap[poolID].provider == msg.sender, "Permission denied");
         _poolsMap[poolID].validBeforeAt = validBeforeAt;
     }
 
     function setPoolPricePerMinute(uint256 poolID, uint256 pricePerMinute) external onlyProxy {
-        require(_poolsMap[poolID].provider != msg.sender, "Permission denied");
+        require(_poolsMap[poolID].provider == msg.sender, "Permission denied");
         _poolsMap[poolID].pricePerMinute = pricePerMinute;
     }
 
@@ -273,23 +233,28 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function upVote(uint256 orderID) external onlyProxy {
         require(_ordersMap[orderID].customer == msg.sender, "Permission denied");
+        require(
+            _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender].voted == false,
+            "You already voted, could recall and vote again."
+        );
 
         _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender] = Vote({t: VoteType.Up, voted: true});
-        _poolsMap[_ordersMap[orderID].poolID].vote.increment();
+        _poolsMap[_ordersMap[orderID].poolID].votes += 1;
     }
 
     function downVote(uint256 orderID) external onlyProxy {
         require(_ordersMap[orderID].customer == msg.sender, "Permission denied");
+        require(
+            _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender].voted == false,
+            "You already voted, could recall and vote again."
+        );
 
-        _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender] = Vote({
-            t: VoteType.Down,
-            voted: true
-        });
-        _poolsMap[_ordersMap[orderID].poolID].vote.decrement();
+        _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender] = Vote({t: VoteType.Down, voted: true});
+        _poolsMap[_ordersMap[orderID].poolID].votes -= 1;
     }
 
-    function isVoted(uint256 orderID) external view onlyProxy returns (bool) {
-        return _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender].voted;
+    function voteOfUserAndOrder(address user, uint256 orderID) external view onlyProxy returns (Vote memory) {
+        return _poolsVoteMap[_ordersMap[orderID].poolID][user];
     }
 
     function recallVote(uint256 orderID) external onlyProxy {
@@ -299,9 +264,9 @@ contract ProxyExchange is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         );
 
         if (_poolsVoteMap[_ordersMap[orderID].poolID][msg.sender].t == VoteType.Up) {
-            _poolsMap[_ordersMap[orderID].poolID].vote.decrement();
+            _poolsMap[_ordersMap[orderID].poolID].votes -= 1;
         } else if (_poolsVoteMap[_ordersMap[orderID].poolID][msg.sender].t == VoteType.Down) {
-            _poolsMap[_ordersMap[orderID].poolID].vote.increment();
+            _poolsMap[_ordersMap[orderID].poolID].votes += 1;
         }
 
         delete _poolsVoteMap[_ordersMap[orderID].poolID][msg.sender];

@@ -5,12 +5,10 @@ import Pool from './pool/Pool';
 import ProxyExchange from './contracts/ProxyExchange.js';
 import Layout from './Layout';
 import Loading from './Loading';
-import { useNavigate } from 'react-router-dom';
 
 export default function App() {
   const [pools, setPools] = useState([]);
   const [inLoading, setInLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchPools() {
@@ -26,7 +24,7 @@ export default function App() {
           proxies: [],
           validBeforeAt: rawPool[1].validBeforeAt,
           provider: rawPool[1].provider,
-          vote: rawPool[1].vote,
+          votes: rawPool[1].votes,
         }
 
         // fetch proxies
@@ -48,16 +46,9 @@ export default function App() {
     fetchPools();
   }, []);
 
-  function onPublishClick() {
-    navigate('/pools/new');
-  }
-
   return (
     <Layout>
       <div className="home">
-        <div className="actions">
-          <button onClick={onPublishClick}>Publish Pool</button>
-        </div>
         <div className="pools">
           {inLoading ? (
             <Loading />

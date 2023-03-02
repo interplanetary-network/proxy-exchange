@@ -18,7 +18,7 @@ var (
 	logLevel            string
 	contractAddress     string = ""
 	mainNetGatewayURL   string = "https://arb1.arbitrum.io/rpc"
-	goerliNetGatewayURL string = "https://goerli-rollup.arbitrum.io/rpc"
+	goerliNetGatewayURL string = "https://gateway.proxyex.xyz/v1/goerli"
 	useGoerliNet        bool
 )
 

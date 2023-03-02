@@ -19,22 +19,34 @@
   }
 
   .actions {
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+
+    .vote {
+      button {
+        margin-right: 5px;
+      }
+    }
+
+    .authentication {
+      margin-top: 10px;
+
+      pre {
+        padding: 16px;
+        overflow: auto;
+        font-size: 12px;
+        line-height: 1.45;
+        background-color: #ddd;
+        border-radius: 6px;
+        word-wrap: normal;
+        margin-top: 0;
+        margin-bottom: 16px;
+      }
+    }
   }
 
-  .authentication {
-    margin-top: 10px;
-
-    pre {
-      padding: 16px;
-      overflow: auto;
-      font-size: 12px;
-      line-height: 1.45;
-      background-color: #ddd;
-      border-radius: 6px;
-      word-wrap: normal;
-      margin-top: 0;
-      margin-bottom: 16px;
-    }
+  .error {
+    color: red;
+    font-size: 12px;
   }
 }
