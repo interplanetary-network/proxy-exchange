@@ -1,13 +1,9 @@
-name: 'Exchange Web App Deploy (testnet)'
+name: 'Deploy Exchange Web App (testnet)'
 on:
   push:
     branches:
       - 'main'
-    paths:
-      - 'exchange/**'
   
-  workflow_dispatch:
-
 env:
   DOMAIN: 'goerli.proxyex.xyz'
 
