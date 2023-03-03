@@ -25,7 +25,7 @@ jobs:
         id: upload
         uses: aquiladev/ipfs-action@master
         with: 
-          path: ./build
+          path: ./exchange/build
           service: pinata
           pinataKey: ${{ secrets.PINATA_API_KEY }}
           pinataSecret: ${{ secrets.PINATA_API_SECRET }}
