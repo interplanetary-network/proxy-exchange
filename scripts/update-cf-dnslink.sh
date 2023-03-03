@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -euo
+
 DOMAIN=$1
 DNSLINK=$2
 
