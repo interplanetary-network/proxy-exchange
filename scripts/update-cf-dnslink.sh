@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 DOMAIN=$1
 DNSLINK=$2
@@ -13,7 +13,7 @@ for i in $(echo $hostnames |jq -r -c '.result | .[]'); do
     target=$(echo $i |jq -r -c '.target')
     name=$(echo $i |jq -r -c '.name')
     id=$(echo $i |jq -r -c '.id')
-    if [[ $target == "ipfs" && $name == "$DOMAIN" ]]; then
+    if [ $target == "ipfs" -a $name == "$DOMAIN" ]; then
         curl -s \
             -X PATCH \
             -H "Authorization: Bearer ${CF_API_TOKEN}" \
