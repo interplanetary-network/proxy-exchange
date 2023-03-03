@@ -26,6 +26,7 @@ jobs:
         uses: aquiladev/ipfs-action@master
         with: 
           path: ./exchange/build
+          pinName: 'proxyex.xyz'
           service: pinata
           pinataKey: ${{ secrets.PINATA_API_KEY }}
           pinataSecret: ${{ secrets.PINATA_API_SECRET }}
