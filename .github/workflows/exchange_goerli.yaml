@@ -1,0 +1,40 @@
+name: 'Exchange Web App Deploy (testnet)'
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'exchange/**'
+  
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 'Build'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: 'Build'
+        run: |
+          cd exchange
+          npm ci && npm run build
+
+      - name: 'Upload'
+        id: upload
+        uses: aquiladev/ipfs-action@master
+        with: 
+          path: ./build
+          service: pinata
+          pinataKey: ${{ secrets.PINATA_API_KEY }}
+          pinataSecret: ${{ secrets.PINATA_API_SECRET }}
+
+      - name: 'Update DNS'
+        env:
+          CID: ${{ steps.upload.outputs.hash }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
+          ZONE_ID: ${{ secrets.CF_DNS_ZONE_ID }}
+          DOMAIN: 'goerli.proxyex.xyz'
+        run: |
+          python ./scripts/update-cloudflare-dns.py
